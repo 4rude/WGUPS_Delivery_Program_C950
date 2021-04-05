@@ -7,9 +7,11 @@ from datetime import *
 def deliver_packages():
     """
     deliver_packages:
-    The deliver_packages function is the main algorithm to load packages into the truck, initialize and update the
-    package_hash_table hash table, deliver the packages, and finally return the hash of package information so a
-    user can access the data after the program has been ran.
+    The deliver_packages function is the main algorithm to initialize the distance dictionary and package hash table,
+    initialize and update truck data, load packages into the truck, initialize and update the package_hash_table hash
+    table (which stores the packages), organize which packages must be delivered in which order, deliver the packages,
+    and finally return the hash table of package information so a user can access the data after the program has been
+    ran.
 
     Args:
     n/a
@@ -57,8 +59,18 @@ def deliver_packages():
 
     # Create truck objects to hold packages. Initialize time to current time. Load organized packages.
     truck_one = Truck(1, time(8, 0), truck_one_list)
+
     # Set the truck's current location to the WGUPS hub
     truck_one.current_location = hub_address
+
+    # Print lines for formatting
+    print("----------------------------------")
+    # Print out a header for the truck deliveries
+    print("Truck Delivery Schedule: ")
+    # Print lines for formatting
+    print("----------------------------------")
+    # Print out when truck one leaves
+    print("Truck one leaves at", truck_one.time)
 
     # Update the transit time to 8am, as this is the first set of packages that need to be delivered
     update_transit_time(package_hash_table, truck_one_list, time(8, 0))
@@ -90,11 +102,11 @@ def deliver_packages():
             # Update the truck's current location to the hub address
             truck_one.current_location = hub_address
 
-    # print("Empty list:", truck_one.package_list)
     # Set truck one return time to current time (truck has returned to the hub)
     truck_one.return_time = truck_one.time
+
     # Print truck return time
-    # print("Truck one return time:", truck_one.return_time)
+    print("Truck one return time:", truck_one.return_time)
 
     # -------------------------------- TRUCK TWO DELIVERY CODE -------------------------------- #
     # TRUCK TWO GOES OUT AT THE SAME TIME AS TRUCK ONE
@@ -104,8 +116,12 @@ def deliver_packages():
     # Create truck two to hold next list of packages. Set current truck time to previous trucks return time.
     # Load organized packages.
     truck_two = Truck(2, time(8, 0), truck_two_list)
+
     # Set the truck's current location to the WGUPS hub
     truck_two.current_location = hub_address
+
+    # Print out when truck two leaves
+    print("Truck two leaves at", truck_two.time)
 
     # Update the transit time of all packages in the truck two list with the return time of truck one (truck two
     # leaves when truck one returns).
@@ -141,7 +157,7 @@ def deliver_packages():
     # Set truck two return time to current time (meaning the truck has returned to the hub)
     truck_two.return_time = truck_two.time
     # Print truck return time
-    # print("Truck two return time:", truck_two.return_time)
+    print("Truck two return time:", truck_two.return_time)
 
     # -------------------------------- TRUCK THREE DELIVERY CODE -------------------------------- #
     # TRUCK THREE GOES OUT AFTER TRUCK ONE RETURNS
@@ -150,12 +166,15 @@ def deliver_packages():
 
     # Create truck three to hold next list of packages. Set current truck time to previous trucks return time.
     truck_three = Truck(3, truck_one.return_time, truck_three_list)
+
     # Set the truck's current location to the WGUPS hub
     truck_three.current_location = hub_address
 
+    # Print out when truck three leaves
+    print("Truck three leaves at", truck_three.time)
+
     # Update the transit time of all packages in the truck three list with the return time of truck one (truck three
     # leaves when truck two returns).
-    # TODO: Ensure that this truck does not leave before 9:05AM, the truck one return time may dip below 9:05am
     update_transit_time(package_hash_table, truck_three_list, time(9, 5))
 
     # Deliver truck three packages until there are no packages left (while truck is not empty...)
@@ -188,13 +207,11 @@ def deliver_packages():
     # Set truck three return time to current time (meaning the truck has returned to the hub)
     truck_three.return_time = truck_three.time
     # Print truck return time & mileage
-    # print("Truck three return time:", truck_three.return_time)
+    print("Truck three return time:", truck_three.return_time)
 
     # -------------------------------- TRUCK ONE SECOND DELIVERY CODE -------------------------------- #
     # TRUCK ONE GOES OUT AGAIN AFTER TRUCK TWO RETURNS
     # Re-fill truck_one_list with the rest of the packages
-    # 22 South side, 23 s side, 24 s side,removed 26 and put truck 3, 27 & 35 == north side, 28 central,
-    # moved 32 to truck three, 33 is n central (close to 28), 27 & 35 is on n side, 39 n side, 12 is mid south
     truck_one_list = [11, 22, 23, 24]
 
     # Run the algorithm to organize the truck package list so it can be delivered in the most efficient way
@@ -205,6 +222,12 @@ def deliver_packages():
 
     # Re-set the truck one's current location to the hub address
     truck_one.current_location = hub_address
+
+    # Re-set the current time of truck one so it reflects when truck two returns (so truck one can leave)
+    truck_one.time = truck_two.return_time
+
+    # Print out when truck one leaves again to deliver packages
+    print("Truck one leaves again at", truck_one.time)
 
     # Update the hub time for all of the packages in the newly loaded truck one
     update_hub_time(package_hash_table, truck_one_list, time(8, 0))
@@ -243,13 +266,11 @@ def deliver_packages():
     # Set truck one return time to current time (meaning the truck has returned to the hub)
     truck_one.return_time = truck_one.time
     # Print truck return time
-    # print("Truck one re-return time:", truck_one.return_time)
+    print("Truck one re-return time:", truck_one.return_time)
 
     # -------------------------------- TRUCK TWO SECOND DELIVERY DELIVERY CODE -------------------------------- #
     # TRUCK TWO GOES OUT AT THE SAME TIME AS TRUCK ONE
     # Load up the truck two list with the rest of the packages
-    # Packages laying on the middle & north side
-    # moved 11 to s side,
     truck_two_list = [5, 8, 9, 10, 17, 2, 33, 39, 27, 35]
     # Run the algorithm to organize the truck package list so it can be delivered in the most efficient way
     truck_two_list = delivery_algorithm(truck_two_list)
@@ -257,15 +278,21 @@ def deliver_packages():
     # Update truck two to hold next list of packages.
     # Load organized packages.
     truck_two.package_list = truck_two_list
+
     # Set the truck's current location to the WGUPS hub
     truck_two.current_location = hub_address
+
     # Truck two leaves when package #9 gets the updated address
-    truck_two.time = time(10, 20)
+    truck_two.time = truck_three.return_time
+
+    # Print out when truck two leaves again to deliver packages
+    print("Truck two leaves again at", truck_two.time)
+
     # Update the hub time for all of the packages in the newly loaded truck one
     update_hub_time(package_hash_table, truck_two_list, time(8, 0))
     # Update the transit time of all packages in the truck two list with the return time of truck three (truck two
     # leaves when truck one returns).
-    update_transit_time(package_hash_table, truck_two_list, time(10, 20))
+    update_transit_time(package_hash_table, truck_two_list, truck_three.return_time)
 
     # Deliver truck two packages until there are no packages left (while truck is not empty...)
     while truck_two.package_list:
@@ -297,18 +324,17 @@ def deliver_packages():
     # Set truck two return time to current time (meaning the truck has returned to the hub)
     truck_two.return_time = truck_two.time
     # Print truck return time
-    # print("Truck two re-return time:", truck_two.return_time)
+    print("Truck two re-return time:", truck_two.return_time)
 
     # -------------------------------- END-OF-DAY DELIVERY INFO CODE -------------------------------- #
 
     # Determine the delivery mileage of all the trucks combined
     all_truck_mileage = truck_one.miles + truck_two.miles + truck_three.miles
+    print("----------------------------------")
     print("Total mileage for deliveries:", round(all_truck_mileage, 2))
     print("-------------------")
     print("Packages Delivered.")
     print("-------------------")
-    # Return a list of packages and their time statuses
-    # 1. At the hub, 2. Out for Delivery, 3. Delivered
 
     # Finally return the package_statuses Hash Table holding package status data for the user to view
     return package_hash_table
@@ -322,9 +348,9 @@ def update_hub_time(hash_table, truck_list, hub_time):
     hub_time, and set the hash table key to a new value.
 
     Args:
-    hash_table:
-    truck_list:
-    hub_time:
+    hash_table: The hash table is an object reference passed in so the contents can be updated with new hub time data.
+    truck_list: The truck list is a list of package id's that should have their hub time updated.
+    hub_time: The hub time parameter is a time object that updates the current hub time for a package object.
 
     Returns:
     n/a
@@ -336,9 +362,13 @@ def update_hub_time(hash_table, truck_list, hub_time):
     be O(n^2), but since we know it does not, then it us O(n). This is due to each element in the truck_list list being
     iterated over.
     """
+    # For each package id integer in the truck list
     for package_id in truck_list:
+        # Get the package object based off of the package id passed into the hash table getter
         package = hash_table.get(package_id)
+        # Set the selected package objects hub time to a new hub time
         package.hub_time = hub_time
+        # Update the hash table key that matches the package id with the updated package
         hash_table.set(package_id, package)
 
 
@@ -350,9 +380,11 @@ def update_transit_time(hash_table, truck_list, transit_time):
     and is in transit with the given transit_time, and set the hash table key to a new value.
 
     Args:
-    hash_table:
-    truck_list:
-    transit_time:
+    hash_table: The hash table is an object reference passed in so the contents can be updated with new transit time
+    data.
+    truck_list: The truck list is a list of package id's that should have their transit time updated.
+    transit_time: The transit time parameter is a time object that updates the current transit time for a package
+    object.
 
     Returns:
     n/a
@@ -364,9 +396,13 @@ def update_transit_time(hash_table, truck_list, transit_time):
     be O(n^2), but since we know it does not, then it us O(n). This is due to each element in the truck_list list being
     iterated over.
     """
+    # For each package id integer in the truck list
     for package_id in truck_list:
+        # Get the package object based off of the package id passed into the hash table getter
         temp_package = hash_table.get(package_id)
+        # Set the selected package objects transit time to a new transit time
         temp_package.transit_time = transit_time
+        # Update the hash table key that matches the package id with the updated package
         hash_table.set(package_id, temp_package)
 
 
@@ -378,9 +414,11 @@ def update_delivery_time(hash_table, package_id, delivery_time):
     delivery time with the given delivery time, and set the hash table key to a new value (package object).
 
     Args:
-    hash_table:
-    package_id:
-    delivery_time:
+    hash_table: The hash table is an object reference passed in so the contents can be updated with new delivery time
+    data.
+    package_id: The track list is a list of package id's that should have their transit time updated.
+    delivery_time: The delivery time parameter is a time object that is used to update the selected packages delivery
+    time.
 
     Returns:
     n/a
@@ -393,8 +431,11 @@ def update_delivery_time(hash_table, package_id, delivery_time):
     is 1 to 1 and does not have to be resized (even though it supports chaining), the function ran in this program will
     be O(1).
     """
+    # Get a package object based off of a given package id using the hash tables get method
     temp_package = hash_table.get(package_id)
+    # Update the packages delivery time with the given delivery time
     temp_package.delivery_time = delivery_time
+    # Set the hash table key that matches the package id with the updated package
     hash_table.set(package_id, temp_package)
 
 
@@ -406,9 +447,9 @@ def update_truck_type(hash_table, truck_list, truck_id):
     truck id with the given truck id, and set the hash table key to a new value.
 
     Args:
-    hash_table:
-    truck_list:
-    truck_id:
+    hash_table: The hash table is an object reference passed in so the contents can be updated with new truck type.
+    truck_list: The track list is a list of package id's that should have their truck id updated.
+    truck_id: The truck id is the given integer that matches the truck that delivered which package.
 
     Returns:
     n/a
@@ -416,7 +457,9 @@ def update_truck_type(hash_table, truck_list, truck_id):
     Raises:
     n/a
 
-    Algorithmic complexity: O(n).
+    Algorithmic complexity: O(n). The complexity of the algorithm is O(n) due to each object within a list of objects
+    being iterated over. The code within the for loop is O(n) because the get, set, and assignment operations done
+    are all O(1) speed.
     """
 
     for package_id in truck_list:
@@ -434,15 +477,16 @@ def miles_to_time(miles):
     rounded time lost/gained probably average out.
 
     Args:
-    miles:
+    miles: The miles parameter holds the amount of miles that needs to be converted to a time quantity and object.
 
     Returns:
-    n/a
+    converted_time: Returns an amount of time that has been converted from miles.
 
     Raises:
     n/a
 
-    Algorithmic complexity: O(1).
+    Algorithmic complexity: O(1). The algorithm is O(1) because it does a simple dividing operation and applies a
+    rounding function to the resulting number, which are both constant.
     """
     # Use the basic equation to convert an amount of miles rounded to an amount of minutes
     converted_time = round(float(miles) / 0.3)
@@ -457,16 +501,19 @@ def add_time(amount_in_minutes, old_time):
     the converted_old_date_time, and returns it in the form of a time object.
 
     Args:
-    amount_in_minutes:
-    old_time:
+    amount_in_minutes: The amount of minutes parameter holds the amount of minutes that needs to be added to the old
+    time.
+    old_time: The old_time parameter is the amount of time that needs to be added to so a new time can be created.
 
     Returns:
-    n/a
+    updated_time: The updated_time is a time object that is returned based on the given time and amount of minutes to
+    add to that.
 
     Raises:
     n/a
 
-    Algorithmic complexity: O(1).
+    Algorithmic complexity: O(1). The complexity of this algorithm is O(1) because most of the code is instantiation and
+    assigning values to objects, as well as an addition operation which are all at constant complexity.
     """
     # Non-specific date for conversion use
     temp_date = date.today()
@@ -481,22 +528,26 @@ def add_time(amount_in_minutes, old_time):
 def delivery_algorithm(package_list):
     """
     delivery_algorithm:
-    This algorithm is an implementation of the nearest neighbor algorithm, starting at the hub address, it goes the
-    next closest vertex, and repeats that until every vertex has been visited. After that the algorithm goes back to the
-    hub address vertex. The delivery_algorithm accepts a list of packages as one argument to determine which of those
-    packages must be delivered first. Organize the list of packages into how they should be delivered (index 0 first,
-    last index last) and return it in the form of a hash table.
+    This algorithm is an implementation of the nearest neighbor (greedy) algorithm, starting at the hub address, it goes
+    the next closest vertex, and repeats that until every vertex has been visited. After that the algorithm goes back to
+    the hub address vertex. The delivery_algorithm accepts a list of packages as one argument to determine which of
+    those packages must be delivered first. Organize the list of packages into how they should be delivered (index 0
+    first, last index last) and return it in the form of a hash table.
 
     Args:
-    package_list:
+    package_list: The package list is a list of integers representing a number of package id's. The package id's are
+    are going to be organized throughout the algorithm.
 
     Returns:
-    organized_list:
+    organized_list: The organized_list is a list of integers that represent package id's that have been organized based
+    on an optimally found route of package deliveries.
 
     Raises:
     n/a
 
-    Algorithmic complexity: O(n^2).
+    Algorithmic complexity: O(n^2). This nearest neighbor algorithm is polynomial in time, with a while loop iterating
+    over every package id found in a given list, and within that loop a for loop (also) iterates over every package id
+    within the package list.
     """
     # Set the hub address to the starting place of all deliveries
     hub_address = "4001 South 700 East"
@@ -505,6 +556,7 @@ def delivery_algorithm(package_list):
     package_table = package_reader()
     # Initialize a dictionary with all of the delivery locations and distances
     distance_dict = distance_reader()
+    # Create an empty list that holds the organized package ids
     organized_list = []
 
     # Start at hud. Each route is a weighted circuit graph where the first and last vertex is the same. With given
@@ -546,94 +598,7 @@ def delivery_algorithm(package_list):
         # Remove the first element from the package list
         package_list.remove(shortest_list[0])
 
+    # Returned the organized package list
     return organized_list
 
 
-"""
-
-
-def delivery_algorithm_two():
-    # hub_address, end_address = "4001 South 700 East"
-    hub_address = "4001 South 700 East"
-    end_address = "177 W Price Ave"
-    # Create a hash table with all of the package data in it (including their id & address)
-    package_table = package_reader()
-    # Initialize a dictionary with all of the delivery locations and distances
-    distance_dict = distance_reader()
-
-    # Dictionary that holds all of the nodes & their weights that will be set to infinity or 0 (if the current/first)
-    # node
-    node_distance = {}
-    # Keeps track of the route used to reach a node
-    node_route = {}
-    # Contains a copy of the distance dictionary/graph
-    not_visited_nodes = distance_dict
-    # The large number variable is used to mark unvisited nodes
-    large_number = 9999999
-    # track_route holds an (O(n^2)) optimal route for delivery
-    track_route = []
-    # For each node in the dictionary of not visited nodes
-    for node in not_visited_nodes:
-        # In the node_distance dictionary, set all of the nodes/vertices to infinity (or in this case a large number)
-        node_distance[node] = large_number
-    # In the node_distance dictionary, set the vertex that represents the beginning of the route to 0
-    node_distance[hub_address] = 0
-
-    # While the dictionary of not visited nodes still has a key/value pair...
-    while not_visited_nodes:
-        # The min distance node holds the node which has the lowest weight (in miles) from the current vertex
-        min_distance_node = None
-
-        # For each node in the copy of the distance dictionary
-        for node in not_visited_nodes:
-            # If the shortest distance node has not been set
-            if min_distance_node is None:
-                # add the first node in the unvisited node dictionary
-                min_distance_node = node
-            # If the node distance is less than the min distance node, change the min distance node to the node in the
-            # dictionary of not visited nodes
-            elif node_distance[node] < node_distance[min_distance_node]:
-                min_distance_node = node
-                # print(min_distance_node)
-
-        # Add a list of all of the address/path options from the selected node that has the shortest distance
-        # from the currently selected node in the not_visited_node dictionary
-        path_options = distance_dict[min_distance_node].items()
-        print(path_options)
-
-        # For each key/value pair in the path_options sub-dictionary (in relation to the min_distance_node key)
-        for child_node, weight in path_options:
-
-            if weight + node_distance[min_distance_node] < node_distance[child_node]:
-                # The distance of the child node is now the weight plus the min distance node
-                node_distance[child_node] = weight + node_distance[min_distance_node]
-                # Assign to the child node key the previously visited min distance node
-                node_route[child_node] = min_distance_node
-
-        # Pop the min_distance_node (ie. closest node to current vertex) from the list of nodes that have not been
-        # visited
-        not_visited_nodes.pop(min_distance_node)
-
-    # Can the current node instead be assigned to the next node in the list of packages that need to be delivered?
-    # The current node is assigned to the final node that needs to be visited in the route
-    current_node = end_address
-
-    # While the current node is not the start of the route...
-    while current_node != hub_address:
-        try:
-            # Insert the current node to the beginning of the track route (creating the list backwards)
-            track_route.insert(0, current_node)
-            # Set the current node equal to the
-            current_node = node_route[current_node]
-        except KeyError:  # will never happen because its a fully connected graph
-            print("Path is not reachable.")
-            break
-
-    # Insert the starting address to the beginning of the route∂∂∂
-    track_route.insert(0, hub_address)
-
-    # If the end address distance is found and not still marked large_number/infinity, will always be found
-    if node_distance[end_address] != large_number:
-        print("Shortest distance is:", str(node_distance[end_address]))
-        print("Optimal path is: ", str(track_route))
-"""

@@ -4,14 +4,20 @@ import csv  # Import the CSV python library
 def distance_reader():
     """
     distance_reader:
-    The distance_reader function takes in a csv file url as an argument, and returns a dictionary filled with
+    The distance_reader function uses a csv file url to access address and distance information, opens that csv file,
+    creates a list of street names from the csv file, creates a list of street names from the csv file data, creates an
+    empty dictionary to hold a fully connected graph of addresses and their distances apart, goes through each row in
+    the read_csv dictionary and adds that data to the all_distances_dictionary combined with the list of streets.
+    Finally the algorithm returns a fully connected graph-like data structure (using a python dictionary) filled with
     organized csv data.
 
     Args:
     n/a
 
     Returns:
-    all_distances_dict:
+    all_distances_dict: The all_distances_dict is a dictionary that uses an address as its key, and another dictionary
+    as its value. Within the sub dictionary it uses a address as its key, and a float (representing miles) as its
+    value.
 
     Raises:
     n/a
@@ -41,7 +47,7 @@ def distance_reader():
             # Add temp_dict as value of row (address) key
             all_distances_dict[row[0]] = temp_dict
 
-            # print(row)
+            print(row)
 
         # Return the all_distances dictionary
         return all_distances_dict

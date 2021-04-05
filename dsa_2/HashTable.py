@@ -2,7 +2,8 @@ class HashTable:
     """
     Class HashTable:
     This is a custom Hash Table designed to create an object that holds data in the key/value pair form. The
-    Hash Table runs fast due to it being from O(1) to O(n) access time.
+    Hash Table runs fast due to it being from O(1) to O(n) access time (and in this application, due to the amount of
+    objects that we know will be held in this hash table, it will be O(1) access time).
     """
 
     def __init__(self):
@@ -12,10 +13,15 @@ class HashTable:
         self.table = [None] * self.table_size
 
     def set(self, key, value):
-        """The set() function sets a key and value to an entry in the Hash Table depending on the keys hashed value.
+        """
+        The set() function sets a key and value to an entry in the Hash Table depending on the keys hashed value.
         The set function also adds chaining to the hash table. It does this by looking at each sub-list in the
         bucket, re-setting its value to the given value (in the argument) if the key already exists, and adding a new
-        sub-list to the bucket if the key does not already exist."""
+        sub-list to the bucket if the key does not already exist. This chaining functionality to the set function
+        of the hash table qualifies for the self-adjusting requirement.
+
+        Algorithmic complexity: O(1).
+        """
         # Hash the given key to determine where to place the key/value pair
         hashed_key = self._hash_algorithm(key)
         # Create a list with the key & value held in it
@@ -38,7 +44,11 @@ class HashTable:
             return True
 
     def get(self, key):
-        """The get() function returns a value of an entry matching the given key."""
+        """
+        The get() function returns a value of an entry matching the given key within the hash table.
+
+        Algorithmic complexity: O(1).
+        """
         # Create a hashed key based off of the input for the key
         hashed_key = self._hash_algorithm(key)
 
@@ -52,7 +62,11 @@ class HashTable:
                     return pair[1]
 
     def delete(self, key):
-        """The delete() function removes a table entry matching the given key."""
+        """
+        The delete() function removes a table entry matching the given key within the hash table.
+
+        Algorithmic complexity: O(1).
+        """
         # Create a hashed key based off of the input for the key
         hashed_key = self._hash_algorithm(key)
 
@@ -68,7 +82,11 @@ class HashTable:
                 return True
 
     def print_hash_table(self):
-        """The print_hash_table() prints out each entry in the Hash Table."""
+        """
+        The print_hash_table() prints out each entry in the Hash Table to the command line interface.
+
+        Algorithmic complexity: O(n).
+        """
         print("---------HASH TABLE----------")
         # For each entry in the hash table...
         for entry in self.table:
@@ -77,8 +95,12 @@ class HashTable:
                 print(str(entry))
 
     def _hash_algorithm(self, key):
-        """The _hash_algorithm is a very simple algorithm that hashes a number and returns it. It calculates the
-         key given modulo the size of the table. This is a 1-1 mapping because it is known that there are only
-         40 unique keys that will be used, so we only need to generate 40 buckets (which is the most efficient method
-         when a user knows the amount of data that a hash table will hold."""
+        """
+        The _hash_algorithm is a very simple algorithm that hashes a number and returns it. It calculates the
+        key given modulo the size of the table. This is a 1-1 mapping because it is known that there are only
+        40 unique keys that will be used, so we only need to generate 40 buckets (which is the most efficient method
+        when a user knows the amount of data that a hash table will hold.
+
+        Algorithmic complexity: O(1).
+        """
         return int(key) % self.table_size

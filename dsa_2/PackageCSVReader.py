@@ -5,21 +5,25 @@ from HashTable import *
 
 def package_reader():
     """
-        package_reader:
-        The package_reader function takes in a csv file url as an argument, and returns a dictionary filled with
-        organized csv data.
+    package_reader:
+    The package_reader function opens a csv file, adds the contents to a dictionary using the csv.reader function, and
+    then adds each row of data from the dictionary to the hash table, and finally returns a hash table filled with
+    organized csv data.
 
-        Args:
-        n/a
+    Args:
+    n/a
 
-        Returns:
-        package_hash_table:
+    Returns:
+    package_hash_table: This object is a hash table which holds the package data that is read from a csv file, so that
+    data can then be used to determine what needs to be delivered and how to deliver it.
 
-        Raises:
-        n/a
+    Raises:
+    n/a
 
-        Algorithmic complexity: O(n).
-        """
+    Algorithmic complexity: O(n). A majority of the code is instantiating objects, with the majority of the complexity
+    lying in the for loop which iterates over n elements in the read_csv dictionary. Each row in the dictionary is
+    a line from the csv file. Each line of code within the for loop operates at O(1) complexity.
+    """
     # Open the package_file so it can be accessed using the csv library
     with open("resources/package_file.csv") as file:
         # Create a list filled with CSV data
